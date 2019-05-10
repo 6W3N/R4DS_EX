@@ -1,0 +1,43 @@
+---
+title: "r4ds Ex 3.2.4"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+author: MUKAIMINE
+output: pdf_document
+---
+
+```{r setup, include = FALSE}
+library(ggplot2)
+library(dplyr)
+```
+
+
+# 3.2.4
+## 1
+```{r}
+ggplot(data = mpg)
+```
+We can't see anything
+
+## 2
+```{r}
+mpg %>% dim()
+```
+Num. of rows are `r nrow(mpg)` and collumns are `r ncol(mpg)`.
+
+## 3
+```{r}
+help(mpg)
+## drv f = front-wheel drive, r = rear wheel drive, 4 = 4wd
+```
+
+## 4
+```{r, message=FALSE}
+ggplot(data=mpg) + geom_point(aes(x=hwy,y=cyl))
+```
+
+## 5
+```{r, message=FALSE}
+ggplot(data=mpg) + geom_point(aes(x=class,y=drv))
+```
+It's harder to understand contents than 4
+
