@@ -1,0 +1,73 @@
+---
+title: "r4ds Ex 3.3.1"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+author: MW
+output: pdf_document
+---
+
+```{r setup, include = FALSE}
+library(ggplot2)
+library(dplyr)
+```
+
+
+# 3.2.4
+## 1
+```{r, echo=FALSE}
+ggplot(data=mpg) + 
+  geom_point(mapping=aes(x=displ, y=hwy, color="blue"))
+```
+If `color="blue"` is in `aes`, then data are regarded to have categorical "blue". 
+
+## 2
+```{r}
+mpg %>% select_if(is.character) %>% names
+mpg %>% select_if(is.numeric) %>% names
+```
+categorical is `r mpg %>% select_if(is.character) %>% names()`
+continuous is `r mpg %>% select_if(is.numeric) %>% names()`
+
+
+## 3
+e.g., I selected `displ`, `hwy`, and `cty` as well sample code.
+
+##### color
+```{r}
+ggplot(mpg, aes(x=displ, y=hwy, color=cty)) +
+  geom_point()
+```
+
+##### size
+```{r}
+ggplot(mpg, aes(x=displ, y=hwy, size=cty)) +
+  geom_point()
+```
+
+##### shape
+```{r, eval=FALSE}
+ggplot(mpg, aes(x=displ, y=hwy, shape=cty)) +
+  geom_point()
+## error: A continuous variable can not be mapped to shape
+```
+
+## 4
+```{r}
+ggplot(mpg, aes(x=displ, y=hwy, color=cty, size=cty)) +
+  geom_point()
+```
+You can run multiple `aes` but it is ineffective.
+
+## 5
+```{r, eval=FALSE}
+vignette("ggplot2-specs")
+```
+Vignette file explain followings;
+ `...the size of the stroke is controlled by stroke.`.
+
+## 6
+
+```{r}
+ggplot(mpg, aes(x=displ, y=hwy, color=displ<5)) +
+  geom_point()
+```
+You can run above code, like `color=displ<5`. The variables are divided to `TRUE` or `FALSE`.
