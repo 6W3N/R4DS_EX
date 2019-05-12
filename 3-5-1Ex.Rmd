@@ -1,0 +1,62 @@
+---
+title: "r4ds Ex 3.5.1"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+author: MW
+output: pdf_document
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+```
+
+
+# 3.2.4
+## 1
+```{r, echo=FALSE}
+ggplot(data=mpg) +
+	geom_point(mapping=aes(x=displ, y=hwy)) +
+	facet_grid(displ ~ cyl)
+```
+It is drawn for each continuous variable.
+
+## 2
+```{r}
+ggplot(data=mpg) +
+	geom_point(mapping=aes(x=hwy, y=cty)) +
+	facet_grid(drv ~ cyl)
+```
+The empty cells shows no combinations of `drv` and `cyl` in itself.
+
+
+## 3
+`.` means ignoring dimensions. So, `drv ~ .` facet only `drv`.
+
+## 4
+```{r}
+ggplot(data=mpg) +
+	geom_point(mapping=aes(x=displ, y=hwy, color=class))
+```
+Colorized by `class`. 
+### Facet
+#### advantage
+- Friendly to color blinders.
+- Easy to see the relationsihp within `class`
+
+#### disadvantage
+- Increase the number of graphs by the number of catagories.
+
+### Color
+#### advantage
+- Easy to see the relationship between `class`
+
+#### disadvantage
+- Difficult to see if the number of o¥bservation increases
+
+## 5
+`...nrow, ncol: Number of rows and columns.`
+Because `facet_grid` automatically determined rows and cols.
+
+## 6
+If you don't use unique values, it's complicated.
