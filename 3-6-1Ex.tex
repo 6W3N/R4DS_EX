@@ -226,8 +226,20 @@ dependency.
 
 \NormalTok{f <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data=}\NormalTok{mpg) }\OperatorTok{+}\StringTok{ }
 \StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{displ, }\DataTypeTok{y=}\NormalTok{hwy, }\DataTypeTok{color=}\NormalTok{drv, }\DataTypeTok{fill=}\NormalTok{drv), }\DataTypeTok{color=}\StringTok{"white"}\NormalTok{, }\DataTypeTok{pch=}\DecValTok{21}\NormalTok{)}
+
+\KeywordTok{grid.arrange}\NormalTok{(a, b, c, d, e, f, }\DataTypeTok{nrow =} \DecValTok{3}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
+\end{verbatim}
+
+\includegraphics{3-6-1Ex_files/figure-latex/unnamed-chunk-3-1.pdf}
 
 
 \end{document}

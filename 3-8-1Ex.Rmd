@@ -1,0 +1,63 @@
+---
+title: "r4ds Ex 3.8.1"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+author: MW
+output: pdf_document
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+```
+
+
+# 3.8.1
+## 1
+```{r}
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_point(position="jitter")
+```
+Points in above plot are overlapped.
+
+## 2
+- `width`: determine the amount of vertical jitter.
+- `height`: determine the amount of horizontal jitter. 
+Both have 40% of the resolution of the data by default.
+
+## 3
+```{r}
+a <- ggplot(mpg, aes(x=cty, y=hwy)) +
+	geom_count()
+b <- ggplot(mpg, aes(x=cty, y=hwy)) +
+	geom_jitter()
+c <- ggplot(mpg, aes(x=cty, y=hwy, color=class)) +
+	geom_count()
+d <- ggplot(mpg, aes(x=cty, y=hwy, color=class)) +
+	geom_jitter()
+
+gridExtra::grid.arrange(a, b, c, d, nrow=2)
+```
+
+- Left columns: `geom_count`  
+- Right columns: `geom_jitter`  
+- Upper rows: Non-classificated by `class`  
+- Lower rows: Classificated by `class`  
+
+
+If you have lots of observations, you should use `geom_count` rather than `geom_jitter`.
+But you would use `geom_jitter` if you use combination `geom_` and `color`.
+
+
+## 4
+The default is `position="dodge2"` which control not horizontal but only vertical.
+```{r}
+ggplot(data=mpg, aes(x=drv, y=hwy, color=class)) +
+	geom_boxplot()
+```
+So you set `position="identity"` when you want to align vertically.
+```{r}
+ggplot(data=mpg, aes(x=drv, y=hwy, color=class)) +
+	geom_boxplot(position="identity")
+```
+
