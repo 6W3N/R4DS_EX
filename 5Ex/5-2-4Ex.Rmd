@@ -1,0 +1,42 @@
+---
+title: "r4ds Ex 3.9.1"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+author: MW
+output: pdf_document
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+```
+
+
+# 3.9.1
+## 1
+```{r}
+diamonds %>% filter(cut=="Fair") %>%
+	ggplot(aes(x=cut, y=..prop..,fill=color)) +
+		geom_bar() +
+		coord_polar(theta = "y")
+```
+
+## 2
+`labs()` controls plot titles, axis titles, and captions.
+
+
+## 3
+`coord_map` projects the 3D Earth onto a 2D.
+`coord_quickmap` projects approximations of `coord_map`, therefore more quickly than `coord_map`.
+
+## 4
+```{r}
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+  geom_point() + 
+  geom_abline() +
+  coord_fixed()
+```
+
+
+It tells us that the correlation between `cty` and `hwy` is almost `y=x + C`.  
+`geom_abline` makes `x=y` line, which means x:y = 1:1. Furthurmore, `coord_fixed` makes easier to see the 1:1 line by setting the aspect ratio correctly for maps.
