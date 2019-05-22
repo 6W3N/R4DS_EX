@@ -1,0 +1,53 @@
+---
+title: "r4ds Ex 5.4.1"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+author: MW
+output: pdf_document
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+```
+
+
+# 5.4.1
+## 1
+> Brainstorm as many ways as possible to select `dep_time`, `dep_delay`, `arr_time`, and `arr_delay `from flights.
+
+The simplest way is as follows;
+```{r}
+flights %>% select(dep_time, dep_delay, arr_time, arr_delay)
+```
+
+Others are as follows;
+```{r}
+tmp <- c("dep_time", "dep_delay", "arr_time", "arr_delay")
+flights %>% select(tmp)
+```
+```{r}
+flights %>% select(contains("_time"), contains("_delay"))
+```
+
+## 2
+> What happens if you include the name of a variable multiple times in a `select() call? 
+
+It is selected only once no matter how many times you call.
+
+## 3
+
+> What does the `one_of()` function do? Why might it be helpful in conjunction with this vector?  
+
+This is useful when you have the column names you want to select as a string vector.
+
+## 4
+
+> Does the result of running the following code surprise you? How do the select helpers deal with case by default? How can you change that default?
+
+```{r}
+select(flights, contains("TIME"))
+```
+
+By default, `contains()` ignores case. If you don't want to, you should use `ignore.case=FALSE`.
+

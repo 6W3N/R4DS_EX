@@ -1,0 +1,43 @@
+---
+title: "r4ds Ex 5.3.1"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+author: MW
+output: pdf_document
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+```
+
+
+# 5.3.1
+
+> How could you use `arrange()` to sort all missing values to the start? (Hint: use `is.na())`.
+## 1
+```{r}
+flights %>% arrange(desc(is.na(dep_time)))
+```
+
+## 2
+
+> Sort flights to find the most delayed flights. Find the flights that left earliest.
+```{r}
+flights %>% arrange(dep_delay)
+```
+
+## 3
+
+> Sort flights to find the fastest flights.
+
+```{r}
+flights %>% arrange(air_time)
+```
+
+## 4
+> Which flights traveled the longest? Which traveled the shortest? 
+
+```{r}
+flights %>% arrange(desc(distance))
+```

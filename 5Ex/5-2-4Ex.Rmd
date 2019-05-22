@@ -1,5 +1,5 @@
 ---
-title: "r4ds Ex 3.9.1"
+title: "r4ds Ex 5.2.4"
 date: "`r format(Sys.time(), '%Y/%m/%d')`"
 author: MW
 output: pdf_document
@@ -12,31 +12,71 @@ library(dplyr)
 ```
 
 
-# 3.9.1
+# 5.2.4
 ## 1
+> Find all flights that
+> > 1. Had an arrival delay of two or more hours
+> > 2. Flew to Houston (IAH or HOU)
+> > 3. Were operated by United, American, or Delta
+> > 4. Departed in summer (July, August, and September)
+> > 5. Arrived more than two hours late, but didn’t leave late
+> > 6. Were delayed by at least an hour, but made up over 30 minutes in flight
+> > 7. Departed between midnight and 6 am (inclusive)
+
+### 1 
 ```{r}
-diamonds %>% filter(cut=="Fair") %>%
-	ggplot(aes(x=cut, y=..prop..,fill=color)) +
-		geom_bar() +
-		coord_polar(theta = "y")
+flights %>% filter(arr_delay>=120)
 ```
 
+### 2
+```{r}
+flights %>% filter(dest=="IAH" | dest=="HOU")
+```
+
+### 3
+```{r}
+flights %>% filter(carrier %in% c("AA", "DL", "UA"))
+```
+
+### 4
+```{r}
+flights %>% filter(month>=7, month<=9)
+```
+
+### 5
+```{r}
+flights %>% filter(arr_delay>120, dep_delay<=0)
+```
+
+### 6 
+```{r}
+flights %>% filter(dep_delay>=60, dep_delay-arr_delay>30)
+```
+
+### 7
+```{r}
+flights %>% filter(dep_time==2400 | dep_time<=600)
+```
+
+
 ## 2
-`labs()` controls plot titles, axis titles, and captions.
+> Another useful dplyr filtering helper is `between()`. What does it do? Can you use it to simplify the code needed to answer the previous challenges?  
+
+`between(x, left, right)` is a shortcut for `x >= left & x <= right`.
 
 
 ## 3
-`coord_map` projects the 3D Earth onto a 2D.
-`coord_quickmap` projects approximations of `coord_map`, therefore more quickly than `coord_map`.
+> How many flights have a missing `dep_time`? What other variables are missing? What might these rows represent?  
 
-## 4
 ```{r}
-ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
-  geom_point() + 
-  geom_abline() +
-  coord_fixed()
+flights %>% filter(dep_time %>% is.na())
 ```
 
+## 4
+> Why is `NA ^` 0 not missing? Why is` NA | TRUE` not missing? Why is `FALSE & NA` not missing? Can you figure out the general rule? (`NA * 0` is a tricky counterexample!)  
 
-It tells us that the correlation between `cty` and `hwy` is almost `y=x + C`.  
-`geom_abline` makes `x=y` line, which means x:y = 1:1. Furthurmore, `coord_fixed` makes easier to see the 1:1 line by setting the aspect ratio correctly for maps.
+`x` in followings is any values.
+- `NA^0==1` because `x^0==1`
+- `NA | TRUE` is `TRUE` because `x | TRUE` always return `TRUE`.
+- `FALSE & NA` is `FALSE` because `x & FALSE` always return `FALSE`.
+
