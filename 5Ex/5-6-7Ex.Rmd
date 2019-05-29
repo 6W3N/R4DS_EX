@@ -1,0 +1,112 @@
+---
+title: "r4ds Ex 5.6.7"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+author: MW
+output: pdf_document
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+```
+
+
+# 5.6.7
+## 1
+  
+> Brainstorm at least 5 different ways to assess the typical delay characteristics of a group of flights. Consider the following scenarios:
+> - A flight is 15 minutes early 50% of the time, and 15 minutes late 50% of the time.
+> - A flight is always 10 minutes late.
+> - A flight is 30 minutes early 50% of the time, and 30 minutes late 50% of the time.
+> - 99% of the time a flight is on time. 1% of the time it’s 2 hours late.
+> Which is more important: arrival delay or departure delay?
+
+I think always being late is hard to cost for the passengers because passengers will act depending on its.
+Most important is the probability, and the next one is the delay time.
+
+
+## 2
+  
+> Come up with another approach that will give you the same output as `not_cancelled %>% count(dest)` and `not_cancelled %>% count(tailnum, wt = distance)` (without using `count()`).
+
+The former is capable written as follows:
+```{r}
+not_cancelled %>% group_by(dest) %>%
+	summarize(n=length(dest))
+```
+
+The latter is capable written as follows:
+```{r}
+not_cancelled %>% group_by(tailnum) %>%
+	summarize(n=sum(distance))
+```
+
+
+## 3
+  
+> Our definition of cancelled flights `(is.na(dep_delay) | is.na(arr_delay))` is slightly suboptimal. Why? Which is the most important column?
+
+Logically, `arr_delay < dep_delay` because it may not arrive even if it departed. So more important is `arr_delay`, I think.
+
+## 4
+  
+> Look at the number of cancelled flights per day. Is there a pattern? Is the proportion of cancelled flights related to the average delay?
+
+```{r}
+ex4 <- flights %>%
+	group_by(year, month, day) %>%
+	summarize(cancelled_num = sum(is.na(arr_delay) | is.na(dep_delay)),
+		flights_num = n()) 
+ex4
+```
+
+```{r}
+ex4 %>% ggplot() +
+	geom_point(aes(x=flights_num, y=cancelled_num))
+
+```
+
+```{r}
+ex4 <- flights %>% 
+	group_by(year, month, day) %>%
+	summarize(cancelled_prop = mean(is.na(arr_delay) | is.na(dep_delay)),
+		mean_depdelay = mean(dep_delay, na.rm = TRUE),
+		mean_arrdelay = mean(arr_delay, na.rm = TRUE)) %>% 
+	ungroup()
+
+ex4 %>% ggplot() +
+	geom_point(aes(x=mean_depdelay, y=cancelled_prop))
+
+ex4 %>% ggplot() +
+	geom_point(aes(x=mean_arrdelay, y=cancelled_prop))
+```
+
+These figures shows that increasing departure and arrival delay cause cancell.
+
+## 5
+
+> Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? Why/why not? (Hint: think about `flights %>% group_by(carrier, dest) %>% summarise(n())`)
+
+
+```{r}
+flights %>%
+	group_by(carrier) %>% 
+	summarize(arr_delay=mean(arr_delay, na.rm=TRUE)) %>%
+	arrange(desc(arr_delay))
+```
+`F9` carrier is worst.
+
+I didn't do Challenge...
+
+## 6
+
+> What does the sort argument to count() do? When might you use it?
+
+`?dplyr::count`  
+`sort: if ‘TRUE’ will sort output in descending order of ‘n’`
+
+
+
+
+

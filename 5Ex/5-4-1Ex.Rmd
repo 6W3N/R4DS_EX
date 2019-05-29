@@ -31,18 +31,19 @@ flights %>% select(contains("_time"), contains("_delay"))
 ```
 
 ## 2
+  
 > What happens if you include the name of a variable multiple times in a `select() call? 
 
 It is selected only once no matter how many times you call.
 
 ## 3
-
+  
 > What does the `one_of()` function do? Why might it be helpful in conjunction with this vector?  
 
 This is useful when you have the column names you want to select as a string vector.
 
 ## 4
-
+  
 > Does the result of running the following code surprise you? How do the select helpers deal with case by default? How can you change that default?
 
 ```{r}
