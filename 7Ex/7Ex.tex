@@ -1,0 +1,642 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={r4ds Ex 7},
+            pdfauthor={MW},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{r4ds Ex 7}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{MW}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{2019/06/12}
+
+
+\begin{document}
+\maketitle
+
+\hypertarget{section}{%
+\section{7.3.4}\label{section}}
+
+\hypertarget{section-1}{%
+\subsection{1}\label{section-1}}
+
+\begin{quote}
+Explore the distribution of each of the \texttt{x}, \texttt{y}, and
+\texttt{z} variables in \texttt{diamonds}. What do you learn? Think
+about a diamond and how you might decide which dimension is the length,
+width, and depth.
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diamonds }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(x,y,z) }\OperatorTok{%>%}\StringTok{ }\NormalTok{summary}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        x                y                z         
+##  Min.   : 0.000   Min.   : 0.000   Min.   : 0.000  
+##  1st Qu.: 4.710   1st Qu.: 4.720   1st Qu.: 2.910  
+##  Median : 5.700   Median : 5.710   Median : 3.530  
+##  Mean   : 5.731   Mean   : 5.735   Mean   : 3.539  
+##  3rd Qu.: 6.540   3rd Qu.: 6.540   3rd Qu.: 4.040  
+##  Max.   :10.740   Max.   :58.900   Max.   :31.800
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diamonds }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(x,y,z) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{gather}\NormalTok{() }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{value, }\DataTypeTok{fill =}\NormalTok{ key)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_histogram}\NormalTok{(}\DataTypeTok{position =} \StringTok{"fill"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: Removed 66 rows containing missing values (geom_bar).
+\end{verbatim}
+
+\includegraphics{7Ex_files/figure-latex/unnamed-chunk-2-1.pdf}
+
+\hypertarget{section-2}{%
+\subsection{2}\label{section-2}}
+
+\begin{quote}
+Explore the distribution of price. Do you discover anything unusual or
+surprising? (Hint: Carefully think about the \texttt{binwidth} and make
+sure you try a wide range of values.)
+\end{quote}
+
+\hypertarget{section-3}{%
+\subsection{3}\label{section-3}}
+
+\begin{quote}
+How many diamonds are 0.99 carat? How many are 1 carat? What do you
+think is the cause of the difference?
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diamonds }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(carat }\OperatorTok{>=}\StringTok{ }\FloatTok{0.99}\NormalTok{, carat }\OperatorTok{<=}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{count}\NormalTok{(carat)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 2 x 2
+##   carat     n
+##   <dbl> <int>
+## 1  0.99    23
+## 2  1     1558
+\end{verbatim}
+
+These results inply that many diamonds are rounded up.
+
+\hypertarget{section-4}{%
+\subsection{4}\label{section-4}}
+
+\begin{quote}
+Compare and contrast \texttt{coord\_cartesian()} vs \texttt{xlim()} or
+\texttt{ylim()} when zooming in on a histogram. What happens if you
+leave binwidth unset? What happens if you try and zoom so only half a
+bar shows?
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diamonds }\OperatorTok{%>%}\StringTok{ }\KeywordTok{ggplot}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{    }\KeywordTok{geom_histogram}\NormalTok{(}\DataTypeTok{mapping =} \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ price)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{coord_cartesian}\NormalTok{(}\DataTypeTok{xlim =} \KeywordTok{c}\NormalTok{(}\DecValTok{1000}\NormalTok{,}\DecValTok{3000}\NormalTok{), }\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1000}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+\end{verbatim}
+
+\includegraphics{7Ex_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diamonds }\OperatorTok{%>%}\StringTok{ }\KeywordTok{ggplot}\NormalTok{() }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_histogram}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{price)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{xlim}\NormalTok{(}\DecValTok{1000}\NormalTok{,}\DecValTok{3000}\NormalTok{)}\OperatorTok{+}
+\StringTok{    }\KeywordTok{ylim}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1000}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: Removed 38103 rows containing non-finite values (stat_bin).
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: Removed 4 rows containing missing values (geom_bar).
+\end{verbatim}
+
+\includegraphics{7Ex_files/figure-latex/unnamed-chunk-4-2.pdf}
+
+\hypertarget{section-5}{%
+\section{7.4.1}\label{section-5}}
+
+\hypertarget{section-6}{%
+\subsection{1}\label{section-6}}
+
+\begin{quote}
+What happens to missing values in a histogram? What happens to missing
+values in a bar chart? Why is there a difference?
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diamonds }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{y =} \KeywordTok{ifelse}\NormalTok{(y }\OperatorTok{>}\StringTok{ }\DecValTok{20}\NormalTok{, }\OtherTok{NA_real_}\NormalTok{, y)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ y)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_histogram}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: Removed 2 rows containing non-finite values (stat_bin).
+\end{verbatim}
+
+\includegraphics{7Ex_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diamonds }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{cut =} \KeywordTok{ifelse}\NormalTok{(cut}\OperatorTok{==}\StringTok{"Ideal"}\NormalTok{, }\OtherTok{NA_character_}\NormalTok{, cut)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ cut)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_bar}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{7Ex_files/figure-latex/unnamed-chunk-5-2.pdf}
+
+\hypertarget{section-7}{%
+\subsection{2}\label{section-7}}
+
+\begin{quote}
+What does na.rm = TRUE do in mean() and sum()?
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mean}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\OtherTok{NA}\NormalTok{), }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sum}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\OtherTok{NA}\NormalTok{), }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 3
+\end{verbatim}
+
+\hypertarget{section-8}{%
+\section{7.5.1}\label{section-8}}
+
+\hypertarget{section-9}{%
+\subsection{1}\label{section-9}}
+
+\begin{quote}
+Use what you've learned to improve the visualization of the departure
+times of cancelled vs.~non-cancelled flights.
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nycflights13}\OperatorTok{::}\NormalTok{flights }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{cancelled=}\KeywordTok{is.na}\NormalTok{(dep_time), }\DataTypeTok{sche_dep=}\NormalTok{(sched_dep_time }\OperatorTok{%/%}\StringTok{ }\DecValTok{100}\NormalTok{)}\OperatorTok{/}\NormalTok{(sched_dep_time }\OperatorTok{%%}\StringTok{ }\DecValTok{100}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{select}\NormalTok{(cancelled, sche_dep) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{ggplot}\NormalTok{()}\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_boxplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{y=}\NormalTok{sche_dep, }\DataTypeTok{x=}\NormalTok{cancelled))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Removed 60696 rows containing non-finite values (stat_boxplot).
+\end{verbatim}
+
+\includegraphics{7Ex_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+\hypertarget{section-10}{%
+\subsection{2}\label{section-10}}
+
+\begin{quote}
+What variable in the diamonds dataset is most important for predicting
+the price of a diamond? How is that variable correlated with cut? Why
+does the combination of those two relationships lead to lower quality
+diamonds being more expensive?
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{broom}\OperatorTok{::}\KeywordTok{tidy}\NormalTok{(}\KeywordTok{glm}\NormalTok{(diamonds}\OperatorTok{$}\NormalTok{price }\OperatorTok{~}\StringTok{ }\NormalTok{diamonds}\OperatorTok{$}\NormalTok{carat }\OperatorTok{+}\StringTok{ }\NormalTok{diamonds}\OperatorTok{$}\NormalTok{cut }\OperatorTok{+}\StringTok{ }\NormalTok{diamonds}\OperatorTok{$}\NormalTok{color }\OperatorTok{+}\StringTok{ }\NormalTok{diamonds}\OperatorTok{$}\NormalTok{clarity))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 19 x 5
+##    term               estimate std.error statistic   p.value
+##    <chr>                 <dbl>     <dbl>     <dbl>     <dbl>
+##  1 (Intercept)        -3711.        14.0 -265.     0.       
+##  2 diamonds$carat      8886.        12.0  738.     0.       
+##  3 diamonds$cut.L       699.        20.3   34.4    4.29e-256
+##  4 diamonds$cut.Q      -328.        17.9  -18.3    1.52e- 74
+##  5 diamonds$cut.C       181.        15.6   11.6    4.13e- 31
+##  6 diamonds$cut^4        -1.21      12.5   -0.0969 9.23e-  1
+##  7 diamonds$color.L   -1910.        17.7 -108.     0.       
+##  8 diamonds$color.Q    -628.        16.1  -39.0    0.       
+##  9 diamonds$color.C    -172.        15.1  -11.4    4.01e- 30
+## 10 diamonds$color^4      21.7       13.8    1.57   1.17e-  1
+## 11 diamonds$color^5     -85.9       13.1   -6.57   5.00e- 11
+## 12 diamonds$color^6     -50.0       11.9   -4.20   2.62e-  5
+## 13 diamonds$clarity.L  4218.        30.8  137.     0.       
+## 14 diamonds$clarity.Q -1832.        28.8  -63.6    0.       
+## 15 diamonds$clarity.C   923.        24.7   37.4    2.00e-302
+## 16 diamonds$clarity^4  -362.        19.7  -18.3    6.82e- 75
+## 17 diamonds$clarity^5   217.        16.1   13.4    3.76e- 41
+## 18 diamonds$clarity^6     2.11      14.0    0.150  8.81e-  1
+## 19 diamonds$clarity^7   110.        12.4    8.91   5.24e- 19
+\end{verbatim}
+
+\hypertarget{section-11}{%
+\subsection{3}\label{section-11}}
+
+\begin{quote}
+Install the ggstance package, and create a horizontal box plot. How does
+this compare to using \texttt{coord\_flip()}?
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mpg }\OperatorTok{%>%}\StringTok{ }\KeywordTok{ggplot}\NormalTok{() }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_boxplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ class, }\DataTypeTok{y =}\NormalTok{ hwy)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{coord_flip}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{7Ex_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\hypertarget{section-12}{%
+\subsection{4}\label{section-12}}
+
+\begin{quote}
+One problem with box plots is that they were developed in an era of much
+smaller datasets and tend to display a prohibitively large number of
+``outlying values''. One approach to remedy this problem is the letter
+value plot. Install the lvplot package, and try using
+\texttt{geom\_lv()} to display the distribution of price vs cut. What do
+you learn? How do you interpret the plots?
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(lvplot)}
+
+\NormalTok{diamonds }\OperatorTok{%>%}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{cut, }\DataTypeTok{y=}\NormalTok{price)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_lv}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{7Ex_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+\hypertarget{section-13}{%
+\subsection{5}\label{section-13}}
+
+\begin{quote}
+Compare and contrast \texttt{geom\_violin()} with a faceted
+\texttt{geom\_histogram()}, or a colored \texttt{geom\_freqpoly()}. What
+are the pros and cons of each method?
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diamonds }\OperatorTok{%>%}\StringTok{ }\KeywordTok{ggplot}\NormalTok{() }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_violin}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{cut, }\DataTypeTok{y=}\NormalTok{price))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{7Ex_files/figure-latex/unnamed-chunk-11-1.pdf}
+
+\texttt{geom\_violin} has a merit that distribution is easy to
+understand.
+
+\hypertarget{section-14}{%
+\subsection{6}\label{section-14}}
+
+\begin{quote}
+If you have a small dataset, it's sometimes useful to use
+\texttt{geom\_jitter()} to see the relationship between a continuous and
+categorical variable. The ggbeeswarm package provides a number of
+methods similar to \texttt{geom\_jitter()}. List them and briefly
+describe what each one does.
+\end{quote}
+
+\hypertarget{section-15}{%
+\section{7.5.2}\label{section-15}}
+
+\hypertarget{section-16}{%
+\subsection{1}\label{section-16}}
+
+\begin{quote}
+How could you rescale the count dataset above to more clearly show the
+distribution of cut within color, or color within cut?
+\end{quote}
+
+\texttt{cut} within \texttt{color}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(viridis)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: viridisLite
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diamonds }\OperatorTok{%>%}\StringTok{ }\KeywordTok{count}\NormalTok{(color, cut) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(color) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{prop=}\NormalTok{n}\OperatorTok{/}\KeywordTok{sum}\NormalTok{(n)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{ggplot}\NormalTok{()}\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_tile}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{color, }\DataTypeTok{y=}\NormalTok{cut, }\DataTypeTok{fill=}\NormalTok{prop))}\OperatorTok{+}
+\StringTok{    }\KeywordTok{scale_fill_viridis}\NormalTok{(}\DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{7Ex_files/figure-latex/unnamed-chunk-12-1.pdf}
+
+\texttt{color} within \texttt{cut}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diamonds }\OperatorTok{%>%}\StringTok{ }\KeywordTok{count}\NormalTok{(color, cut) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(cut) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{prop=}\NormalTok{n}\OperatorTok{/}\KeywordTok{sum}\NormalTok{(n)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{ggplot}\NormalTok{()}\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_tile}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{color, }\DataTypeTok{y=}\NormalTok{cut, }\DataTypeTok{fill=}\NormalTok{prop))}\OperatorTok{+}
+\StringTok{    }\KeywordTok{scale_fill_viridis}\NormalTok{(}\DataTypeTok{limits=}\KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{7Ex_files/figure-latex/unnamed-chunk-13-1.pdf}
+
+\hypertarget{section-17}{%
+\subsection{2}\label{section-17}}
+
+\begin{quote}
+Use \texttt{geom\_tile()} together with dplyr to explore how average
+flight delays vary by destination and month of year. What makes the plot
+difficult to read? How could you improve it?
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nycflights13}\OperatorTok{::}\NormalTok{flights }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(month, dest) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{dep_delay =} \KeywordTok{mean}\NormalTok{(dep_delay, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{factor}\NormalTok{(month), }\DataTypeTok{y=}\KeywordTok{reorder}\NormalTok{(dest, dep_delay), }\DataTypeTok{fill=}\NormalTok{dep_delay)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_tile}\NormalTok{() }\OperatorTok{+}
+\StringTok{    }\KeywordTok{scale_fill_viridis}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{7Ex_files/figure-latex/unnamed-chunk-14-1.pdf} \# 7.5.3
+\#\# 1 \textgreater{} \textgreater{} Why is it slightly better to use
+aes(x = color, y = cut) rather than aes(x = cut, y = color) in the
+example above? \textgreater{}
+
+\texttt{cut\_number}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diamonds }\OperatorTok{%>%}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\KeywordTok{cut_number}\NormalTok{(carat, }\DecValTok{5}\NormalTok{), }\DataTypeTok{x=}\NormalTok{price)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_freqpoly}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+\end{verbatim}
+
+\includegraphics{7Ex_files/figure-latex/unnamed-chunk-15-1.pdf}
+
+\texttt{cut\_width}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diamonds }\OperatorTok{%>%}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\KeywordTok{cut_width}\NormalTok{(carat, }\DecValTok{5}\NormalTok{), }\DataTypeTok{x=}\NormalTok{price)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_freqpoly}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+\end{verbatim}
+
+\includegraphics{7Ex_files/figure-latex/unnamed-chunk-16-1.pdf}
+
+\hypertarget{section-18}{%
+\subsection{2}\label{section-18}}
+
+\begin{quote}
+Visualize the distribution of carat, partitioned by \texttt{price}.
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diamonds }\OperatorTok{%>%}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{cut_number}\NormalTok{(price, }\DecValTok{10}\NormalTok{), }\DataTypeTok{y=}\NormalTok{carat)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_violin}\NormalTok{() }\OperatorTok{+}
+\StringTok{    }\KeywordTok{coord_flip}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{7Ex_files/figure-latex/unnamed-chunk-17-1.pdf}
+
+\hypertarget{section-19}{%
+\subsection{3}\label{section-19}}
+
+\begin{quote}
+How does the price distribution of very large diamonds compare to small
+diamonds. Is it as you expect, or does it surprise you?
+\end{quote}
+
+\hypertarget{section-20}{%
+\subsection{4}\label{section-20}}
+
+\begin{quote}
+Combine two of the techniques you've learned to visualize the combined
+distribution of cut, carat, and price.
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{diamonds }\OperatorTok{%>%}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{carat, }\DataTypeTok{y=}\NormalTok{price)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_violin}\NormalTok{() }\OperatorTok{+}\StringTok{ }
+\StringTok{    }\KeywordTok{facet_grid}\NormalTok{(}\OperatorTok{~}\NormalTok{cut)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{7Ex_files/figure-latex/unnamed-chunk-18-1.pdf}
+
+\hypertarget{section-21}{%
+\subsection{5}\label{section-21}}
+
+\begin{quote}
+Two dimensional plots reveal outliers that are not visible in one
+dimensional plots. For example, some points in the plot below have an
+unusual combination of x and y values, which makes the points outliers
+even though their x and y values appear normal when examined separately.
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ diamonds) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{mapping =} \KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ x, }\DataTypeTok{y =}\NormalTok{ y)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{coord_cartesian}\NormalTok{(}\DataTypeTok{xlim =} \KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{11}\NormalTok{), }\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{, }\DecValTok{11}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{7Ex_files/figure-latex/unnamed-chunk-19-1.pdf}
+\textgreater{} \textgreater{} Why is a scatterplot a better display than
+a binned plot for this case? \textgreater{}
+
+If there is a strong relationships between \texttt{x} and \texttt{y},
+then you should use scatterplot.
+
+
+\end{document}
