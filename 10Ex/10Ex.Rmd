@@ -1,0 +1,102 @@
+---
+title: "r4ds Ex 10"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+author: MW
+output: pdf_document
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+```
+
+
+# 10.5
+## 1
+>    
+>	How can you tell if an object is a tibble? (Hint: try printing mtcars, which is a regular data frame).
+> 
+
+```{r}
+mtcars
+```
+  
+If data is NOT tibble, basically all the values are returned.
+
+```{r}
+mtcars %>% as_tibble()
+```
+  
+On the other hands, data type in columns is unique, and top 10 rows of data are returned by default.
+
+## 2
+>  
+> Compare and contrast the following operations on a data.frame and equivalent tibble. What is different? Why might the default data frame behaviours cause you frustration?
+>
+
+```{r}
+df <- data.frame(abc = 1, xyz = "a")
+df$x
+df[, "xyz"]
+df[, c("abc", "xyz")]
+```
+
+
+```{r}
+df <- tibble(abc = 1, xyz = "a")
+df$x
+df[, "xyz"]
+df[, c("abc", "xyz")]
+```
+
+## 3
+>
+> If you have the name of a variable stored in an object, e.g. var <- "mpg", how can you extract the reference variable from a tibble?
+>
+
+## 4
+>  
+> Practice referring to non-syntactic names in the following data frame by:
+> > 1. Extracting the variable called 1.	
+> > 2. Plotting a scatterplot of 1 vs 2.
+> > 3. Creating a new column called 3 which is 2 divided by 1.
+> > 4. Renaming the columns to one, two and three.
+```{r}
+annoying <- tibble(
+  `1` = 1:10,
+  `2` = `1` * 2 + rnorm(length(`1`))
+)
+```
+
+```{r}
+annoying[[1]]
+annoying %>% ggplot(aes(x=`1`, y=`2`)) +
+	geom_point()
+annoying <- annoying %>% mutate(`3` = `2` / `1`)
+annoying
+annoying %>% rename(one = `1`, two = `2`, three = `3`)
+```
+
+## 5
+> 
+> What does tibble::enframe() do? When might you use it?
+> 
+
+```{r}
+enframe(c(a=1, b=2, c=3))
+```
+
+## 6
+>
+> What option controls how many additional column names are printed at the footer of a tibble?
+> 
+  
+```
+?print.tbl
+```
+
+```
+n_extra: Number of extra columns to print abbreviated information for,
+          if the width is too small for the entire tibble. If ‘NULL’,
+          the default, will print information about at most
+          ‘tibble.max_extra_cols’ extra columns.
+```

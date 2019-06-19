@@ -1,0 +1,182 @@
+---
+title: "r4ds Ex 11"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+author: MW
+output: 
+  pdf_document: 
+    latex_engine: lualatex
+documentclass: ltjsarticle
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+```
+
+
+# 11.2.1
+## 1
+>    
+> What function would you use to read a file where fields were separated with “|”?
+> 
+
+```
+read_delim(hogehoge, delim = "|")
+```
+  
+## 2
+>  
+> Apart from `file`, `skip`, and `comment`, what other arguments do `read_csv()` and `read_tsv()` have in common?
+>
+
+```{r}
+?read_csv()
+```
+
+or 
+
+```{r}
+read_csv %>% formals() %>% names()
+read_tsv %>% formals() %>% names()
+```
+
+```{r}
+df <- tibble(abc = 1, xyz = "a")
+df$x
+df[, "xyz"]
+df[, c("abc", "xyz")]
+```
+
+## 3
+>
+> What are the most important arguments to `read_fwf()`?
+>
+
+This command can read fixed width files.
+
+## 4
+>  
+> Sometimes strings in a CSV file contain commas. To prevent them from causing problems they need to be surrounded by a quoting character, like `"` or `'`. By convention, `read_csv()` assumes that the quoting character will be `"`, and if you want to change it you’ll need to use `read_delim()` instead. What arguments do you need to specify to read the following text into a data frame?
+>
+
+```{r}
+"x,y\n1,'a,b'"
+
+```
+
+```{r}
+x <- "x,y\n1,'a,b'"
+read_delim(x, ",", quote="'")
+```
+
+
+## 5
+> 
+> dentify what is wrong with each of the following inline CSV files. What happens when you run the code?
+> 
+
+```{r}
+read_csv("a,b\n1,2,3\n4,5,6")
+read_csv("a,b,c\n1,2\n1,2,3,4")
+read_csv("a,b\n\"1")
+read_csv("a,b\n1,2\na,b")
+read_csv("a;b\n1;3")
+```
+
+The wrong points of first three command are that number of columns and dataset do not match.
+The fourth problem is that data type between first and second rows are not match.
+The last one is that separate by using `;` is terrible in `read_csv()`
+
+
+
+# 11.3.5
+## 1
+>
+> What are the most important arguments to `locale()`?
+>
+
+```{r}
+?locale()
+```
+
+`locale()` determine that 
+- data format 
+- time zone
+- numbers
+- encoding
+
+## 2
+>
+> What happens if you try and set `decimal_mark` and `grouping_mark` to the same character? What happens to the default value of `grouping_mark` when you set `decimal_mark` to `","`? What happens to the default value of `decimal_mark` when you set the `grouping_mark` to `"."`?
+>
+
+```
+locale(decimal_mark = ".", grouping_mark = ".")
+```
+
+```{r}
+locale(decimal_mark = ",")
+```
+
+```{r}
+locale(grouping_mark = ",")
+```
+
+
+## 3
+>
+> I didn’t discuss the `date_format` and `time_format` options to `locale()`. What do they do? Construct an example that shows when they might be useful.
+>
+
+```{r}
+parse_date("19 junio 2019", "%d %B %Y", locale=locale("es"))
+```
+
+## 4
+>
+> If you live outside the US, create a new locale object that encapsulates the settings for the types of file you read most commonly.
+>
+
+```{r}
+japan_locale <- locale(date_format="%Y年%m月%d日")
+parse_date("2019年6月19日", locale = japan_locale)
+```
+
+## 5
+>
+> What’s the difference between `read_csv()` and `read_csv2()`? 
+>
+
+Difference is delimiter.
+
+## 6
+>
+> What are the most common encodings used in Europe? What are the most common encodings used in Asia? Do some googling to find out. 
+>
+
+skip
+
+## 7 
+>
+> Generate the correct format string to parse each of the following dates and times:
+> 
+
+```{r}
+d1 <- "January 1, 2010"
+d2 <- "2015-Mar-07"
+d3 <- "06-Jun-2017"
+d4 <- c("August 19 (2015)", "July 1 (2015)")
+d5 <- "12/30/14" # Dec 30, 2014
+t1 <- "1705"
+t2 <- "11:15:10.12 PM"
+```
+
+Following format is correct;
+
+```{r}
+parse_date(d1, "%B %d, %Y")
+parse_date(d2, "%Y-%b-%d")
+parse_date(d3, "%d-%b-%Y")
+parse_date(d4, "%B %d (%Y)")
+parse_date(d5, "%m/%d/%y")
+parse_time(t1, "%H%M")
+```
