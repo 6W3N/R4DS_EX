@@ -3,7 +3,7 @@ title: "r4ds Ex 11"
 date: "`r format(Sys.time(), '%Y/%m/%d')`"
 author: MW
 output: 
-  pdf_document: 
+  html_document: 
     latex_engine: lualatex
 documentclass: ltjsarticle
 ---
