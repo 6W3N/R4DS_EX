@@ -1,0 +1,622 @@
+\documentclass[]{ltjsarticle}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={r4ds Ex 12},
+            pdfauthor={MW},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{r4ds Ex 12}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{MW}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{2019/06/25}
+
+
+\begin{document}
+\maketitle
+
+\hypertarget{section}{%
+\section{12.2}\label{section}}
+
+\hypertarget{section-1}{%
+\subsection{1}\label{section-1}}
+
+\begin{quote}
+Using prose, describe how the variables and observations are organized
+in each of the sample tables.
+\end{quote}
+
+\begin{verbatim}
+?talbe1
+\end{verbatim}
+
+\begin{quote}
+\begin{quote}
+`table1', `table2', `table3', `table4a', `table4b', and `table5' all
+display the number of TB cases documented by the World Health
+Organization in Afghanistan, Brazil, and China between 1999 and 2000.
+The data contains values associated with four variables (country, year,
+cases, and population), but each table organizes the values in a
+different layout. The data is a subset of the data contained in the
+World Health Organization Global Tuberculosis Report
+\end{quote}
+\end{quote}
+
+\hypertarget{section-2}{%
+\subsection{2}\label{section-2}}
+
+\begin{quote}
+Compute the rate for table2, and table4a + table4b. You will need to
+perform four operations:
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{table2 }\OperatorTok{%>%}\StringTok{ }\KeywordTok{spread}\NormalTok{(type, count) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{cases_per_cap =}\NormalTok{ (cases }\OperatorTok{/}\StringTok{ }\NormalTok{population) }\OperatorTok{*}\StringTok{ }\DecValTok{10000}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{gather}\NormalTok{(}\DataTypeTok{key=}\NormalTok{type, }\DataTypeTok{value=}\NormalTok{count, cases, population, cases_per_cap)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 18 x 4
+##    country      year type            count
+##    <chr>       <int> <chr>           <dbl>
+##  1 Afghanistan  1999 cases         7.45e+2
+##  2 Afghanistan  2000 cases         2.67e+3
+##  3 Brazil       1999 cases         3.77e+4
+##  4 Brazil       2000 cases         8.05e+4
+##  5 China        1999 cases         2.12e+5
+##  6 China        2000 cases         2.14e+5
+##  7 Afghanistan  1999 population    2.00e+7
+##  8 Afghanistan  2000 population    2.06e+7
+##  9 Brazil       1999 population    1.72e+8
+## 10 Brazil       2000 population    1.75e+8
+## 11 China        1999 population    1.27e+9
+## 12 China        2000 population    1.28e+9
+## 13 Afghanistan  1999 cases_per_cap 3.73e-1
+## 14 Afghanistan  2000 cases_per_cap 1.29e+0
+## 15 Brazil       1999 cases_per_cap 2.19e+0
+## 16 Brazil       2000 cases_per_cap 4.61e+0
+## 17 China        1999 cases_per_cap 1.67e+0
+## 18 China        2000 cases_per_cap 1.67e+0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{table4a }\OperatorTok{%>%}\StringTok{ }\KeywordTok{inner_join}\NormalTok{(table4b, }\DataTypeTok{by=}\StringTok{"country"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\StringTok{`}\DataTypeTok{1999}\StringTok{`}\NormalTok{=}\StringTok{`}\DataTypeTok{1999.x}\StringTok{`}\OperatorTok{/}\StringTok{`}\DataTypeTok{1999.y}\StringTok{`}\OperatorTok{*}\DecValTok{10000}\NormalTok{, }
+        \StringTok{`}\DataTypeTok{2000}\StringTok{`}\NormalTok{=}\StringTok{`}\DataTypeTok{2000.x}\StringTok{`}\OperatorTok{/}\StringTok{`}\DataTypeTok{2000.y}\StringTok{`}\OperatorTok{*}\DecValTok{10000}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{select}\NormalTok{(country, }\StringTok{`}\DataTypeTok{1999}\StringTok{`}\NormalTok{, }\StringTok{`}\DataTypeTok{2000}\StringTok{`}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 3 x 3
+##   country     `1999` `2000`
+##   <chr>        <dbl>  <dbl>
+## 1 Afghanistan  0.373   1.29
+## 2 Brazil       2.19    4.61
+## 3 China        1.67    1.67
+\end{verbatim}
+
+I think the latter is harder than the former because the latter is
+separated by default and it makes us be hard to manipulate columns.
+
+\hypertarget{section-3}{%
+\subsection{3}\label{section-3}}
+
+\begin{quote}
+Recreate the plot showing change in cases over time using table2 instead
+of table1. What do you need to do first?
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{table2 }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(type}\OperatorTok{==}\StringTok{"cases"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(year, count)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_line}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{group=}\NormalTok{country), }\DataTypeTok{colour=}\StringTok{"grey50"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{colour=}\NormalTok{country)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{scale_x_continuous}\NormalTok{(}\DataTypeTok{breaks=}\KeywordTok{unique}\NormalTok{(table2}\OperatorTok{$}\NormalTok{year)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{ylab}\NormalTok{(}\StringTok{"cases"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{12Ex_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\hypertarget{section-4}{%
+\section{12.3}\label{section-4}}
+
+\hypertarget{section-5}{%
+\subsection{1}\label{section-5}}
+
+\begin{quote}
+Why are \texttt{gather()} and \texttt{spread()} not perfectly
+symmetrical? Carefully consider the following example:
+\end{quote}
+
+\texttt{gather()} can't specify \texttt{double} in \texttt{key}, on the
+other hand \texttt{spread} can.
+
+\hypertarget{section-6}{%
+\subsection{2}\label{section-6}}
+
+\begin{quote}
+Why does this code fail?
+\end{quote}
+
+1999 -\textgreater{} \texttt{1999} 2000 -\textgreater{} \texttt{2000}
+
+\hypertarget{section-7}{%
+\subsection{3}\label{section-7}}
+
+\begin{quote}
+Why does spreading this tibble fail? How could you add a new column to
+fix the problem?
+\end{quote}
+
+Rows containing \texttt{Phillip\ Woods} and \texttt{age} are duplicated.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{people <-}\StringTok{ }\KeywordTok{tribble}\NormalTok{(}
+  \OperatorTok{~}\NormalTok{name,             }\OperatorTok{~}\NormalTok{key,    }\OperatorTok{~}\NormalTok{value,}
+  \CommentTok{#-----------------|--------|------}
+  \StringTok{"Phillip Woods"}\NormalTok{,   }\StringTok{"age"}\NormalTok{,       }\DecValTok{45}\NormalTok{,}
+  \StringTok{"Phillip Woods"}\NormalTok{,   }\StringTok{"height"}\NormalTok{,   }\DecValTok{186}\NormalTok{,}
+  \StringTok{"Phillip Woods"}\NormalTok{,   }\StringTok{"age"}\NormalTok{,       }\DecValTok{50}\NormalTok{,}
+  \StringTok{"Jessica Cordero"}\NormalTok{, }\StringTok{"age"}\NormalTok{,       }\DecValTok{37}\NormalTok{,}
+  \StringTok{"Jessica Cordero"}\NormalTok{, }\StringTok{"height"}\NormalTok{,   }\DecValTok{156}
+\NormalTok{)}
+
+\NormalTok{people }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{id=}\KeywordTok{rep}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\KeywordTok{nrow}\NormalTok{(people))) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{spread}\NormalTok{(}\DataTypeTok{key=}\NormalTok{key, }\DataTypeTok{value=}\NormalTok{value)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 4
+##   name               id   age height
+##   <chr>           <int> <dbl>  <dbl>
+## 1 Jessica Cordero     4    37     NA
+## 2 Jessica Cordero     5    NA    156
+## 3 Phillip Woods       1    45     NA
+## 4 Phillip Woods       2    NA    186
+## 5 Phillip Woods       3    50     NA
+\end{verbatim}
+
+\hypertarget{section-8}{%
+\subsection{4}\label{section-8}}
+
+\begin{quote}
+Tidy the simple tibble below. Do you need to spread or gather it? What
+are the variables?
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{preg <-}\StringTok{ }\KeywordTok{tribble}\NormalTok{(}
+  \OperatorTok{~}\NormalTok{pregnant, }\OperatorTok{~}\NormalTok{male, }\OperatorTok{~}\NormalTok{female,}
+  \StringTok{"yes"}\NormalTok{,     }\OtherTok{NA}\NormalTok{,    }\DecValTok{10}\NormalTok{,}
+  \StringTok{"no"}\NormalTok{,      }\DecValTok{20}\NormalTok{,    }\DecValTok{12}
+\NormalTok{)}
+
+\NormalTok{preg }\OperatorTok{%>%}\StringTok{ }\KeywordTok{gather}\NormalTok{(male, female, }\DataTypeTok{key=}\NormalTok{pregnant, }\DataTypeTok{value=}\NormalTok{sex, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 3 x 2
+##   pregnant   sex
+##   <chr>    <dbl>
+## 1 male        20
+## 2 female      10
+## 3 female      12
+\end{verbatim}
+
+\hypertarget{section-9}{%
+\section{12.4.3}\label{section-9}}
+
+\hypertarget{section-10}{%
+\subsection{1}\label{section-10}}
+
+\begin{quote}
+What do the extra and fill arguments do in separate()? Experiment with
+the various options for the following two toy datasets.
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{tibble}\NormalTok{(}\DataTypeTok{x =} \KeywordTok{c}\NormalTok{(}\StringTok{"a,b,c"}\NormalTok{, }\StringTok{"d,e,f,g"}\NormalTok{, }\StringTok{"h,i,j"}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{separate}\NormalTok{(x, }\KeywordTok{c}\NormalTok{(}\StringTok{"one"}\NormalTok{, }\StringTok{"two"}\NormalTok{, }\StringTok{"three"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Expected 3 pieces. Additional pieces discarded in 1 rows [2].
+\end{verbatim}
+
+\begin{verbatim}
+## # A tibble: 3 x 3
+##   one   two   three
+##   <chr> <chr> <chr>
+## 1 a     b     c    
+## 2 d     e     f    
+## 3 h     i     j
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{tibble}\NormalTok{(}\DataTypeTok{x =} \KeywordTok{c}\NormalTok{(}\StringTok{"a,b,c"}\NormalTok{, }\StringTok{"d,e"}\NormalTok{, }\StringTok{"f,g,i"}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{separate}\NormalTok{(x, }\KeywordTok{c}\NormalTok{(}\StringTok{"one"}\NormalTok{, }\StringTok{"two"}\NormalTok{, }\StringTok{"three"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Expected 3 pieces. Missing pieces filled with `NA` in 1 rows [2].
+\end{verbatim}
+
+\begin{verbatim}
+## # A tibble: 3 x 3
+##   one   two   three
+##   <chr> <chr> <chr>
+## 1 a     b     c    
+## 2 d     e     <NA> 
+## 3 f     g     i
+\end{verbatim}
+
+\texttt{extra:\ If\ ‘sep’\ is\ a\ character\ vector,\ this\ controls\ what\ happens\ when\ there\ are\ too\ many\ pieces.\ There\ are\ three\ valid\ options:\ -\ "warn"\ (the\ default):\ emit\ a\ warning\ and\ drop\ extra\ values.\ -\ "drop":\ drop\ any\ extra\ values\ without\ a\ warning.\ -\ "merge":\ only\ splits\ at\ most\ ‘length(into)’\ times}
+
+\texttt{fill:\ If\ ‘sep’\ is\ a\ character\ vector,\ this\ controls\ what\ happens\ when\ there\ are\ not\ enough\ pieces.\ There\ are\ three\ valid\ options:\ -\ "warn"\ (the\ default):\ emit\ a\ warning\ and\ fill\ from\ the\ right\ -\ "right":\ fill\ with\ missing\ values\ on\ the\ right\ -\ "left":\ fill\ with\ missing\ values\ on\ the\ left}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{tibble}\NormalTok{(}\DataTypeTok{x =} \KeywordTok{c}\NormalTok{(}\StringTok{"a,b,c"}\NormalTok{, }\StringTok{"d,e,f,g"}\NormalTok{, }\StringTok{"h,i,j"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{separate}\NormalTok{(x, }\KeywordTok{c}\NormalTok{(}\StringTok{"one"}\NormalTok{, }\StringTok{"two"}\NormalTok{, }\StringTok{"three"}\NormalTok{), }\DataTypeTok{extra=}\StringTok{"merge"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 3 x 3
+##   one   two   three
+##   <chr> <chr> <chr>
+## 1 a     b     c    
+## 2 d     e     f,g  
+## 3 h     i     j
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{tibble}\NormalTok{(}\DataTypeTok{x =} \KeywordTok{c}\NormalTok{(}\StringTok{"a,b,c"}\NormalTok{, }\StringTok{"d,e"}\NormalTok{, }\StringTok{"f,g,i"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{separate}\NormalTok{(x, }\KeywordTok{c}\NormalTok{(}\StringTok{"one"}\NormalTok{, }\StringTok{"two"}\NormalTok{, }\StringTok{"three"}\NormalTok{), }\DataTypeTok{fill=}\StringTok{"right"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 3 x 3
+##   one   two   three
+##   <chr> <chr> <chr>
+## 1 a     b     c    
+## 2 d     e     <NA> 
+## 3 f     g     i
+\end{verbatim}
+
+\hypertarget{section-11}{%
+\subsection{2}\label{section-11}}
+
+\begin{quote}
+Both \texttt{unite()} and \texttt{separate()} have a remove argument.
+What does it do? Why would you set it to FALSE?
+\end{quote}
+
+\texttt{remove:\ If\ ‘TRUE’,\ remove\ input\ columns\ from\ output\ data\ frame.}
+
+\hypertarget{section-12}{%
+\subsection{3}\label{section-12}}
+
+\begin{quote}
+Compare and contrast \texttt{separate()} and \texttt{extract()}, Why are
+there three variations of separation (by position, by separator, and
+with groups), but only one unite?
+\end{quote}
+
+\texttt{separate()} can split columns into multiple columns by
+separator. On the other hands, \texttt{extract()} can't. But
+\texttt{extract()} can use regular expression.
+
+\hypertarget{section-13}{%
+\section{12.5.1}\label{section-13}}
+
+\hypertarget{section-14}{%
+\subsection{1}\label{section-14}}
+
+\begin{quote}
+Compare and contrast the \texttt{fill} arguments to \texttt{spread()}
+and \texttt{complete()}.
+\end{quote}
+
+\begin{itemize}
+\item
+  \texttt{spread()}
+\item
+  \begin{itemize}
+  \tightlist
+  \item
+    fill: If set, missing values will be replaced with this value. Note
+    that there are two types of missingness in the input: explicit
+    missing values (i.e.~`NA'), and implicit missings, rows that simply
+    aren't present. Both types of missing value will be replaced by
+    `fill'.
+  \end{itemize}
+\item
+  \texttt{complete()}
+\item
+  \begin{itemize}
+  \tightlist
+  \item
+    fill: A named list that for each variable supplies a single value to
+    use instead of `NA' for missing combinations.
+  \end{itemize}
+\end{itemize}
+
+\hypertarget{section-15}{%
+\subsection{2}\label{section-15}}
+
+\begin{quote}
+What does the direction argument to \texttt{fill()} do?
+\end{quote}
+
+\texttt{down} and \texttt{up}.
+
+\hypertarget{section-16}{%
+\section{12.6.1}\label{section-16}}
+
+\hypertarget{section-17}{%
+\subsection{1}\label{section-17}}
+
+\begin{quote}
+In this case study, I set \texttt{na.rm\ =\ TRUE} just to make it easier
+to check that we had the correct values. Is this reasonable? Think about
+how missing values are represented in this dataset. Are there implicit
+missing values? What's the difference between an \texttt{NA} and zero?
+\end{quote}
+
+It depends on whether \texttt{NA} in this data shows
+\texttt{no\ data\ about\ TB} or
+\texttt{patients\ don\textquotesingle{}t\ have\ TB}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{who }\OperatorTok{%>%}\StringTok{ }\KeywordTok{complete}\NormalTok{(year, country) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{nrow}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 7446
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{who }\OperatorTok{%>%}\StringTok{ }\KeywordTok{nrow}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 7240
+\end{verbatim}
+
+There are implicit rows.
+
+\hypertarget{section-18}{%
+\subsection{2}\label{section-18}}
+
+\begin{quote}
+What happens if you neglect the \texttt{mutate()} step?
+(\texttt{mutate(key\ =\ stringr::str\_replace(key,\ "newrel",\ "new\_rel"))})
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{who }\OperatorTok{%>%}\StringTok{ }\KeywordTok{gather}\NormalTok{(key, value, new_sp_m014}\OperatorTok{:}\NormalTok{newrel_f65, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{separate}\NormalTok{(key, }\KeywordTok{c}\NormalTok{(}\StringTok{"new"}\NormalTok{, }\StringTok{"var"}\NormalTok{, }\StringTok{"sexage"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{new, }\OperatorTok{-}\NormalTok{iso2, }\OperatorTok{-}\NormalTok{iso3) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{separate}\NormalTok{(sexage, }\KeywordTok{c}\NormalTok{(}\StringTok{"sex"}\NormalTok{, }\StringTok{"age"}\NormalTok{), }\DataTypeTok{sep =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Expected 3 pieces. Missing pieces filled with `NA` in 2580 rows
+## [73467, 73468, 73469, 73470, 73471, 73472, 73473, 73474, 73475, 73476,
+## 73477, 73478, 73479, 73480, 73481, 73482, 73483, 73484, 73485, 73486, ...].
+\end{verbatim}
+
+\begin{verbatim}
+## # A tibble: 76,046 x 6
+##    country      year var   sex   age   value
+##    <chr>       <int> <chr> <chr> <chr> <int>
+##  1 Afghanistan  1997 sp    m     014       0
+##  2 Afghanistan  1998 sp    m     014      30
+##  3 Afghanistan  1999 sp    m     014       8
+##  4 Afghanistan  2000 sp    m     014      52
+##  5 Afghanistan  2001 sp    m     014     129
+##  6 Afghanistan  2002 sp    m     014      90
+##  7 Afghanistan  2003 sp    m     014     127
+##  8 Afghanistan  2004 sp    m     014     139
+##  9 Afghanistan  2005 sp    m     014     151
+## 10 Afghanistan  2006 sp    m     014     193
+## # ... with 76,036 more rows
+\end{verbatim}
+
+Many errors happen, because \texttt{separate()} emits ``too few
+values''.
+
+\hypertarget{section-19}{%
+\subsection{3}\label{section-19}}
+
+\begin{quote}
+I claimed that \texttt{iso2} and \texttt{iso3} were redundant with
+country. Confirm this claim.
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{who }\OperatorTok{%>%}\StringTok{ }\KeywordTok{nest}\NormalTok{(}\OperatorTok{-}\NormalTok{country) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{nrow}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 219
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{who }\OperatorTok{%>%}\StringTok{ }\KeywordTok{nest}\NormalTok{(}\OperatorTok{-}\NormalTok{country, }\OperatorTok{-}\NormalTok{iso2, }\OperatorTok{-}\NormalTok{iso3) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{nrow}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 219
+\end{verbatim}
+
+Above results show that \texttt{country}, \texttt{iso2}, and
+\texttt{iso3} is complete matching.
+
+\hypertarget{section-20}{%
+\subsection{4}\label{section-20}}
+
+\begin{quote}
+For each country, year, and sex compute the total number of cases of TB.
+Make an informative visualisation of the data.
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{who }\OperatorTok{%>%}\StringTok{ }\KeywordTok{gather}\NormalTok{(key, value, new_sp_m014}\OperatorTok{:}\NormalTok{newrel_f65, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{key =}\NormalTok{ stringr}\OperatorTok{::}\KeywordTok{str_replace}\NormalTok{(key, }\StringTok{"newrel"}\NormalTok{, }\StringTok{"new_rel"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{separate}\NormalTok{(key, }\KeywordTok{c}\NormalTok{(}\StringTok{"new"}\NormalTok{, }\StringTok{"var"}\NormalTok{, }\StringTok{"sexage"}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{new, }\OperatorTok{-}\NormalTok{iso2, }\OperatorTok{-}\NormalTok{iso3) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{separate}\NormalTok{(sexage, }\KeywordTok{c}\NormalTok{(}\StringTok{"sex"}\NormalTok{, }\StringTok{"age"}\NormalTok{), }\DataTypeTok{sep =} \DecValTok{1}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(country, year, sex) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{cases=}\KeywordTok{sum}\NormalTok{(value)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{unite}\NormalTok{(country_sex, country, sex, }\DataTypeTok{remove=}\OtherTok{FALSE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{year, }\DataTypeTok{y=}\NormalTok{cases, }\DataTypeTok{group=}\NormalTok{country_sex, }\DataTypeTok{color=}\NormalTok{sex)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_line}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{12Ex_files/figure-latex/unnamed-chunk-11-1.pdf}
+
+
+\end{document}

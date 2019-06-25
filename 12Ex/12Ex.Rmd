@@ -1,0 +1,279 @@
+---
+title: "r4ds Ex 12"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+author: MW
+output: 
+  pdf_document: 
+    latex_engine: lualatex
+documentclass: ltjsarticle
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+```
+
+
+# 12.2
+## 1
+
+>    
+> Using prose, describe how the variables and observations are organized in each of the sample tables.
+> 
+
+```
+?talbe1
+```
+
+>
+> > ‘table1’, ‘table2’, ‘table3’, ‘table4a’, ‘table4b’, and ‘table5’
+> >  all display the number of TB cases documented by the World Health
+> >  Organization in Afghanistan, Brazil, and China between 1999 and
+> >  2000. The data contains values associated with four variables
+> >  (country, year, cases, and population), but each table organizes
+> >  the values in a different layout.
+> >  The data is a subset of the data contained in the World Health
+> >  Organization Global Tuberculosis Report
+>
+
+## 2
+
+>  
+> Compute the rate for table2, and table4a + table4b. You will need to perform four operations:
+>
+
+```{r}
+table2 %>% spread(type, count) %>% 
+	mutate(cases_per_cap = (cases / population) * 10000) %>%
+	gather(key=type, value=count, cases, population, cases_per_cap)
+```
+
+
+```{r}
+table4a %>% inner_join(table4b, by="country") %>% 
+	mutate(`1999`=`1999.x`/`1999.y`*10000, 
+		`2000`=`2000.x`/`2000.y`*10000) %>%
+	select(country, `1999`, `2000`)
+```
+
+I think the latter is harder than the former because the latter is separated by default and it makes us be hard to manipulate columns.
+
+
+## 3
+
+>
+> Recreate the plot showing change in cases over time using table2 instead of table1. What do you need to do first?
+>
+
+```{r}
+table2 %>% filter(type=="cases") %>%
+	ggplot(aes(year, count)) +
+	geom_line(aes(group=country), colour="grey50") +
+	geom_point(aes(colour=country)) +
+	scale_x_continuous(breaks=unique(table2$year)) +
+	ylab("cases")
+```
+
+
+# 12.3
+## 1
+
+>
+> Why are `gather()` and `spread()` not perfectly symmetrical? Carefully consider the following example:
+>
+
+`gather()` can't specify `double` in `key`, on the other hand `spread` can.
+
+
+## 2
+
+>
+> Why does this code fail? 
+>
+
+1999 -> `1999`
+2000 -> `2000`
+
+## 3
+
+>
+> Why does spreading this tibble fail? How could you add a new column to fix the problem?
+>
+
+Rows containing `Phillip Woods` and `age` are duplicated.
+
+
+```{r}
+people <- tribble(
+  ~name,             ~key,    ~value,
+  #-----------------|--------|------
+  "Phillip Woods",   "age",       45,
+  "Phillip Woods",   "height",   186,
+  "Phillip Woods",   "age",       50,
+  "Jessica Cordero", "age",       37,
+  "Jessica Cordero", "height",   156
+)
+
+people %>% mutate(id=rep(1:nrow(people))) %>% spread(key=key, value=value)
+```
+
+## 4
+
+>
+> Tidy the simple tibble below. Do you need to spread or gather it? What are the variables?
+>
+
+```{r}
+preg <- tribble(
+  ~pregnant, ~male, ~female,
+  "yes",     NA,    10,
+  "no",      20,    12
+)
+
+preg %>% gather(male, female, key=pregnant, value=sex, na.rm = TRUE)
+```
+
+# 12.4.3
+## 1
+
+>
+> What do the extra and fill arguments do in separate()? Experiment with the various options for the following two toy datasets. 
+>
+
+
+```{r}
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>% 
+  separate(x, c("one", "two", "three"))
+
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>% 
+  separate(x, c("one", "two", "three"))
+```
+
+`extra: If ‘sep’ is a character vector, this controls what happens when there are too many pieces. There are three valid options:
+- "warn" (the default): emit a warning and drop extra values.
+- "drop": drop any extra values without a warning.
+- "merge": only splits at most ‘length(into)’ times
+`
+
+`
+fill: If ‘sep’ is a character vector, this controls what happens when there are not enough pieces. There are three valid options:
+- "warn" (the default): emit a warning and fill from the right
+- "right": fill with missing values on the right
+- "left": fill with missing values on the left
+`
+
+
+```{r}
+tibble(x = c("a,b,c", "d,e,f,g", "h,i,j")) %>%
+	separate(x, c("one", "two", "three"), extra="merge")
+tibble(x = c("a,b,c", "d,e", "f,g,i")) %>%
+	separate(x, c("one", "two", "three"), fill="right")
+```
+
+
+## 2
+
+>
+> Both `unite()` and `separate()` have a remove argument. What does it do? Why would you set it to FALSE? 
+>
+
+`remove: If ‘TRUE’, remove input columns from output data frame.`
+
+
+
+## 3 
+
+>
+> Compare and contrast `separate()` and `extract()`, Why are there three variations of separation (by position, by separator, and with groups), but only one unite?
+> 
+
+`separate()` can split columns into multiple columns by separator. On the other hands, `extract()` can't.
+But `extract()` can use regular expression.
+
+
+# 12.5.1
+## 1
+
+>
+> Compare and contrast the `fill` arguments to `spread()` and `complete()`.
+>
+
+- `spread()`
+- - fill: If set, missing values will be replaced with this value. Note that there are two types of missingness in the input: explicit missing values (i.e. ‘NA’), and implicit missings, rows that simply aren't present. Both types of missing value will be replaced by ‘fill’.
+- `complete()`
+- - fill: A named list that for each variable supplies a single value to use instead of ‘NA’ for missing combinations.
+
+## 2
+
+>
+> What does the direction argument to `fill()` do?
+>
+
+`down` and `up`.
+
+# 12.6.1
+## 1
+
+>
+> In this case study, I set `na.rm = TRUE` just to make it easier to check that we had the correct values. Is this reasonable? Think about how missing values are represented in this dataset. Are there implicit missing values? What’s the difference between an `NA` and zero?
+>
+
+It depends on whether `NA` in this data shows `no data about TB` or `patients don't have TB`
+
+```{r}
+who %>% complete(year, country) %>% nrow()
+
+who %>% nrow()
+```
+
+There are implicit rows.
+
+
+## 2
+
+>
+>  What happens if you neglect the `mutate()` step? (`mutate(key = stringr::str_replace(key, "newrel", "new_rel"))`)
+>
+
+```{r}
+who %>% gather(key, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>%
+	separate(key, c("new", "var", "sexage")) %>%
+	select(-new, -iso2, -iso3) %>%
+	separate(sexage, c("sex", "age"), sep = 1)
+```
+
+Many errors happen, because `separate()` emits "too few values".
+
+## 3
+
+>
+> I claimed that `iso2` and `iso3` were redundant with country. Confirm this claim.
+>
+
+```{r}
+who %>% nest(-country) %>% nrow()
+
+who %>% nest(-country, -iso2, -iso3) %>% nrow()
+```
+
+Above results show that `country`, `iso2`, and `iso3` is complete matching.
+
+## 4
+
+>
+> For each country, year, and sex compute the total number of cases of TB. Make an informative visualisation of the data.
+>
+
+
+```{r}
+who %>% gather(key, value, new_sp_m014:newrel_f65, na.rm = TRUE) %>% 
+	mutate(key = stringr::str_replace(key, "newrel", "new_rel")) %>%
+	separate(key, c("new", "var", "sexage")) %>% 
+	select(-new, -iso2, -iso3) %>% 
+	separate(sexage, c("sex", "age"), sep = 1) %>%
+	group_by(country, year, sex) %>%
+	summarize(cases=sum(value)) %>%
+	unite(country_sex, country, sex, remove=FALSE) %>%
+	ggplot(aes(x=year, y=cases, group=country_sex, color=sex)) +
+	geom_line()
+```
+
