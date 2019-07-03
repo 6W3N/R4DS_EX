@@ -1,0 +1,670 @@
+\documentclass[]{ltjsarticle}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={r4ds Ex 13},
+            pdfauthor={MW},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{r4ds Ex 13}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{MW}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{2019/07/03}
+
+
+\begin{document}
+\maketitle
+
+\hypertarget{section}{%
+\section{13.1}\label{section}}
+
+\hypertarget{section-1}{%
+\subsection{1}\label{section-1}}
+
+\begin{quote}
+Imagine you wanted to draw (approximately) the route each plane flies
+from its origin to its destination. What variables would you need? What
+tables would you need to combine?
+\end{quote}
+
+We need to combine \texttt{flights} and \texttt{airport} due to
+requiring latitude and longitude of airports of destination.
+
+\hypertarget{section-2}{%
+\subsection{2}\label{section-2}}
+
+\begin{quote}
+I forgot to draw the relationship between \texttt{weather} and
+\texttt{airports}. What is the relationship and how should it appear in
+the diagram?
+\end{quote}
+
+\texttt{airports\$faa} and \texttt{weather\$origin} are relationships as
+foreign keys.
+
+\hypertarget{section-3}{%
+\subsection{3}\label{section-3}}
+
+\begin{quote}
+\texttt{weather} only contains information for the origin (NYC)
+airports. If it contained weather records for all airports in the USA,
+what additional relation would it define with \texttt{flights}?
+\end{quote}
+
+There are weather of destinations.
+
+\hypertarget{section-4}{%
+\subsection{4}\label{section-4}}
+
+\begin{quote}
+We know that some days of the year are ``special'', and fewer people
+than usual fly on them. How might you represent that data as a data
+frame? What would be the primary keys of that table? How would it
+connect to the existing tables?
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{holiday <-}\StringTok{ }\KeywordTok{tribble}\NormalTok{(}
+    \OperatorTok{~}\NormalTok{year, }\OperatorTok{~}\NormalTok{month, }\OperatorTok{~}\NormalTok{day, }\OperatorTok{~}\NormalTok{holiday,}
+    \DecValTok{2013}\NormalTok{, }\DecValTok{01}\NormalTok{, }\DecValTok{01}\NormalTok{, }\StringTok{"New Year"}\NormalTok{,}
+    \DecValTok{2013}\NormalTok{, }\DecValTok{12}\NormalTok{, }\DecValTok{25}\NormalTok{, }\StringTok{"Christmas Day"}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{section-5}{%
+\section{13.3}\label{section-5}}
+
+\hypertarget{section-6}{%
+\subsection{1}\label{section-6}}
+
+\begin{quote}
+Add a surrogate key to flights.
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{id=}\DecValTok{1}\OperatorTok{:}\KeywordTok{nrow}\NormalTok{(.))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 336,776 x 20
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    <int> <int> <int>    <int>          <int>     <dbl>    <int>
+##  1  2013     1     1      517            515         2      830
+##  2  2013     1     1      533            529         4      850
+##  3  2013     1     1      542            540         2      923
+##  4  2013     1     1      544            545        -1     1004
+##  5  2013     1     1      554            600        -6      812
+##  6  2013     1     1      554            558        -4      740
+##  7  2013     1     1      555            600        -5      913
+##  8  2013     1     1      557            600        -3      709
+##  9  2013     1     1      557            600        -3      838
+## 10  2013     1     1      558            600        -2      753
+## # ... with 336,766 more rows, and 13 more variables: sched_arr_time <int>,
+## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
+## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+## #   minute <dbl>, time_hour <dttm>, id <int>
+\end{verbatim}
+
+\hypertarget{section-7}{%
+\subsection{2}\label{section-7}}
+
+\begin{quote}
+Identify the keys in the following datasets \textgreater{} 1.
+Lahman::Batting, \textgreater{} 2. babynames::babynames \textgreater{}
+3. nasaweather::atmos \textgreater{} 4. fueleconomy::vehicles
+\textgreater{} 5. ggplot2::diamonds (You might need to install some
+packages and read some documentation.)
+\end{quote}
+
+\hypertarget{section-8}{%
+\subsubsection{1.}\label{section-8}}
+
+In 1.-4. there are primary keys of each dataset.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Lahman}\OperatorTok{::}\NormalTok{Batting }\OperatorTok{%>%}\StringTok{ }\KeywordTok{as_tibble}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(playerID, yearID, stint) }\OperatorTok{%>%}\StringTok{ }\CommentTok{#grouping by primary keys}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{count=}\KeywordTok{n}\NormalTok{()) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{(count}\OperatorTok{>}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 0 x 23
+## # Groups:   playerID, yearID, stint [0]
+## # ... with 23 variables: playerID <chr>, yearID <int>, stint <int>,
+## #   teamID <fct>, lgID <fct>, G <int>, AB <int>, R <int>, H <int>,
+## #   X2B <int>, X3B <int>, HR <int>, RBI <int>, SB <int>, CS <int>,
+## #   BB <int>, SO <int>, IBB <int>, HBP <int>, SH <int>, SF <int>,
+## #   GIDP <int>, count <int>
+\end{verbatim}
+
+Basically, 2.-4. are same as 1.
+
+\hypertarget{section-9}{%
+\subsubsection{5}\label{section-9}}
+
+There are no primary keys.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ggplot2}\OperatorTok{::}\NormalTok{diamonds }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{distinct}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{nrow}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 53794
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ggplot2}\OperatorTok{::}\NormalTok{diamonds }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{nrow}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 53940
+\end{verbatim}
+
+\hypertarget{section-10}{%
+\subsection{3}\label{section-10}}
+
+\begin{quote}
+Draw a diagram illustrating the connections between the
+\texttt{Batting}, \texttt{Master}, and \texttt{Salaries} tables in the
+Lahman package. Draw another diagram that shows the relationship between
+\texttt{Master}, \texttt{Managers}, \texttt{AwardsManagers}. How would
+you characterise the relationship between the \texttt{Batting},
+\texttt{Pitching}, and \texttt{Fielding} tables?
+\end{quote}
+
+We can create diagram in R using \texttt{DiagrameR} or
+\texttt{datamodelr}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{DiagrammeR}\OperatorTok{::}\KeywordTok{grViz}\NormalTok{(}\StringTok{"13Ex/1.dot"}\NormalTok{)}
+\NormalTok{DiagrammeR}\OperatorTok{::}\KeywordTok{grViz}\NormalTok{(}\StringTok{"13Ex/2.dot"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+1.dot
+
+\begin{verbatim}
+digraph subgraph_label {
+  rankdir = TB
+  subgraph cluster0{
+    yearID_S[label="yearID"]
+    teamID_S[label="teamID"]
+    playerID_S[label="playerID"]
+    label = "Salaries"
+    {rank = same; yearID; teamID; playerID;}
+  }
+  subgraph cluster1{
+    playerID_M[label="playerID"]
+    label = "Master"
+  }
+  subgraph cluster2{
+    playerID_B[label="playerID"]
+    yearID_B[label="yearID"]
+    stint_B[label="stint"]
+    label = "Batting"
+    {rank = same; yearID; stint; playerID;}
+  }
+  playerID_M -> playerID_S
+  playerID_M -> playerID_B
+}
+\end{verbatim}
+
+2.dot
+
+\begin{verbatim}
+digraph subgraph_label {
+  rankdir = TB
+  subgraph cluster0{
+    yearID_MN[label="yearID"]
+    teamID_MN[label="teamID"]
+    playerID_MN[label="playerID"]
+    inseason_MN[label="inseason"]
+    label = "Managers"
+    {rank = same; yearID_MN; teamID_MN; inseason_MN; playerID_MN}
+  }
+  subgraph cluster1{
+    playerID_M[label="playerID"]
+    label = "Master"
+  }
+  subgraph cluster2{
+    playerID_A[label="playerID"]
+    awardID_A[label="awardID"]
+    yearID_A[label="yearID"]
+    lgID_A[label="lgID"]
+    label = "AwardManagers"
+    {rank = same; yearID; stint; playerID;}
+  }
+  playerID_M -> playerID_A
+  playerID_M -> playerID_MN
+}
+\end{verbatim}
+
+\hypertarget{section-11}{%
+\section{13.4}\label{section-11}}
+
+\hypertarget{section-12}{%
+\subsection{1}\label{section-12}}
+
+\begin{quote}
+Compute the average delay by destination, then join on the airports data
+frame so you can show the spatial distribution of delays. Here's an easy
+way to draw a map of the United States:
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(dest) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{delay =} \KeywordTok{mean}\NormalTok{(arr_delay, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{inner_join}\NormalTok{(airports, }\DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\DataTypeTok{dest =} \StringTok{"faa"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(lon, lat, }\DataTypeTok{colour =}\NormalTok{ delay)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{borders}\NormalTok{(}\StringTok{"state"}\NormalTok{) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_point}\NormalTok{() }\OperatorTok{+}
+\StringTok{    }\KeywordTok{coord_quickmap}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{13Ex_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\hypertarget{section-13}{%
+\subsection{2}\label{section-13}}
+
+\begin{quote}
+Add the location of the origin and destination (i.e.~the \texttt{lat}
+and \texttt{lon}) to \texttt{flights}.
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(year}\OperatorTok{:}\NormalTok{day, hour, origin, dest) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{left_join}\NormalTok{(}
+\NormalTok{          airports,}
+          \DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\StringTok{"origin"}\NormalTok{ =}\StringTok{ "faa"}\NormalTok{)}
+\NormalTok{          ) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{left_join}\NormalTok{(}
+\NormalTok{          airports,}
+          \DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\StringTok{"dest"}\NormalTok{ =}\StringTok{ "faa"}\NormalTok{)}
+\NormalTok{    ) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{select}\NormalTok{(year}\OperatorTok{:}\NormalTok{day, origin, dest, lat.x, lon.x, lat.y, lon.y)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 336,776 x 9
+##     year month   day origin dest  lat.x lon.x lat.y lon.y
+##    <int> <int> <int> <chr>  <chr> <dbl> <dbl> <dbl> <dbl>
+##  1  2013     1     1 EWR    IAH    40.7 -74.2  30.0 -95.3
+##  2  2013     1     1 LGA    IAH    40.8 -73.9  30.0 -95.3
+##  3  2013     1     1 JFK    MIA    40.6 -73.8  25.8 -80.3
+##  4  2013     1     1 JFK    BQN    40.6 -73.8  NA    NA  
+##  5  2013     1     1 LGA    ATL    40.8 -73.9  33.6 -84.4
+##  6  2013     1     1 EWR    ORD    40.7 -74.2  42.0 -87.9
+##  7  2013     1     1 EWR    FLL    40.7 -74.2  26.1 -80.2
+##  8  2013     1     1 LGA    IAD    40.8 -73.9  38.9 -77.5
+##  9  2013     1     1 JFK    MCO    40.6 -73.8  28.4 -81.3
+## 10  2013     1     1 LGA    ORD    40.8 -73.9  42.0 -87.9
+## # ... with 336,766 more rows
+\end{verbatim}
+
+\hypertarget{section-14}{%
+\subsection{3}\label{section-14}}
+
+\begin{quote}
+Is there a relationship between the age of a plane and its delays?
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights }\OperatorTok{%>%}\StringTok{ }\KeywordTok{inner_join}\NormalTok{(planes }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(tailnum, }\DataTypeTok{plane_year =}\NormalTok{ year), }\DataTypeTok{by =} \StringTok{"tailnum"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{age =}\NormalTok{ year }\OperatorTok{-}\StringTok{ }\NormalTok{plane_year) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(age) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{summarise}\NormalTok{(}
+          \DataTypeTok{dep_delay_mean =} \KeywordTok{mean}\NormalTok{(dep_delay, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{),}
+          \DataTypeTok{arr_delay_mean =} \KeywordTok{mean}\NormalTok{(arr_delay, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{),}
+          \DataTypeTok{n_arr_delay =} \KeywordTok{sum}\NormalTok{(}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(arr_delay)),}
+          \DataTypeTok{n_dep_delay =} \KeywordTok{sum}\NormalTok{(}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(arr_delay))}
+\NormalTok{          ) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{age, }\DataTypeTok{y=}\NormalTok{dep_delay_mean)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_point}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Removed 1 rows containing missing values (geom_point).
+\end{verbatim}
+
+\includegraphics{13Ex_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\hypertarget{section-15}{%
+\subsection{4}\label{section-15}}
+
+\begin{quote}
+What weather conditions make it more likely to see a delay?
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights }\OperatorTok{%>%}\StringTok{ }
+\StringTok{    }\KeywordTok{inner_join}\NormalTok{(weather, }\DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\StringTok{"origin"}\NormalTok{ =}\StringTok{ "origin"}\NormalTok{,}
+                   \StringTok{"year"}\NormalTok{ =}\StringTok{ "year"}\NormalTok{,}
+                   \StringTok{"month"}\NormalTok{ =}\StringTok{ "month"}\NormalTok{,}
+                   \StringTok{"day"}\NormalTok{ =}\StringTok{ "day"}\NormalTok{,}
+                   \StringTok{"hour"}\NormalTok{ =}\StringTok{ "hour"}
+\NormalTok{                   )}
+\NormalTok{    )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 335,220 x 29
+##     year month   day dep_time sched_dep_time dep_delay arr_time
+##    <dbl> <dbl> <int>    <int>          <int>     <dbl>    <int>
+##  1  2013     1     1      517            515         2      830
+##  2  2013     1     1      533            529         4      850
+##  3  2013     1     1      542            540         2      923
+##  4  2013     1     1      544            545        -1     1004
+##  5  2013     1     1      554            600        -6      812
+##  6  2013     1     1      554            558        -4      740
+##  7  2013     1     1      555            600        -5      913
+##  8  2013     1     1      557            600        -3      709
+##  9  2013     1     1      557            600        -3      838
+## 10  2013     1     1      558            600        -2      753
+## # ... with 335,210 more rows, and 22 more variables: sched_arr_time <int>,
+## #   arr_delay <dbl>, carrier <chr>, flight <int>, tailnum <chr>,
+## #   origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>, hour <dbl>,
+## #   minute <dbl>, time_hour.x <dttm>, temp <dbl>, dewp <dbl>, humid <dbl>,
+## #   wind_dir <dbl>, wind_speed <dbl>, wind_gust <dbl>, precip <dbl>,
+## #   pressure <dbl>, visib <dbl>, time_hour.y <dttm>
+\end{verbatim}
+
+GLM\ldots?
+
+\hypertarget{section-16}{%
+\subsection{5}\label{section-16}}
+
+\begin{quote}
+What happened on June 13, 2013? Display the spatial pattern of delays,
+and then use Google to cross-reference with the weather.
+\end{quote}
+
+There were storms.
+
+\hypertarget{section-17}{%
+\section{13.5.1}\label{section-17}}
+
+\hypertarget{section-18}{%
+\subsection{1}\label{section-18}}
+
+\begin{quote}
+What does it mean for a flight to have a missing \texttt{tailnum}? What
+do the tail numbers that don't have a matching record in planes have in
+common? (Hint: one variable explains \textasciitilde90\% of the
+problems.)
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{anti_join}\NormalTok{(planes, }\DataTypeTok{by =} \StringTok{"tailnum"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(carrier) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{count=}\KeywordTok{n}\NormalTok{()) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{select}\NormalTok{(carrier, count)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 10 x 2
+##    carrier count
+##    <chr>   <int>
+##  1 9E       1044
+##  2 AA      22558
+##  3 B6        830
+##  4 DL        110
+##  5 F9         50
+##  6 FL        187
+##  7 MQ      25397
+##  8 UA       1693
+##  9 US        699
+## 10 WN         38
+\end{verbatim}
+
+\hypertarget{section-19}{%
+\subsection{2}\label{section-19}}
+
+\begin{quote}
+Filter flights to only show flights with planes that have flown at least
+100 flights.
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(tailnum) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{count}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{(n }\OperatorTok{>=}\StringTok{ }\DecValTok{100}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 1,218 x 2
+## # Groups:   tailnum [1,218]
+##    tailnum     n
+##    <chr>   <int>
+##  1 <NA>     2512
+##  2 N0EGMQ    371
+##  3 N10156    153
+##  4 N10575    289
+##  5 N11106    129
+##  6 N11107    148
+##  7 N11109    148
+##  8 N11113    138
+##  9 N11119    148
+## 10 N11121    154
+## # ... with 1,208 more rows
+\end{verbatim}
+
+\hypertarget{section-20}{%
+\subsection{3}\label{section-20}}
+
+\begin{quote}
+Combine \texttt{fueleconomy::vehicles} and \texttt{fueleconomy::common}
+to find only the records for the most common models.
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fueleconomy}\OperatorTok{::}\NormalTok{vehicles }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{semi_join}\NormalTok{(fueleconomy}\OperatorTok{::}\NormalTok{common, }\DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\StringTok{"make"}\NormalTok{, }\StringTok{"model"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{distinct}\NormalTok{(model, make) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(model) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{count=}\KeywordTok{n}\NormalTok{()) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{(count }\OperatorTok{>}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{arrange}\NormalTok{(count)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 8 x 3
+## # Groups:   model [3]
+##   model     make       count
+##   <chr>     <chr>      <int>
+## 1 Colt      Dodge          2
+## 2 Colt      Plymouth       2
+## 3 Truck 2WD Mitsubishi     3
+## 4 Truck 4WD Mitsubishi     3
+## 5 Truck 2WD Nissan         3
+## 6 Truck 4WD Nissan         3
+## 7 Truck 2WD Toyota         3
+## 8 Truck 4WD Toyota         3
+\end{verbatim}
+
+\hypertarget{section-21}{%
+\subsection{4}\label{section-21}}
+
+\begin{quote}
+Find the 48 hours (over the course of the whole year) that have the
+worst delays. Cross-reference it with the weather data. Can you see any
+patterns?
+\end{quote}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{flights }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{hour=}\NormalTok{sched_dep_time }\OperatorTok{%/%}\StringTok{ }\DecValTok{100}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(origin, year, month, day, hour) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{dep_delay =} \KeywordTok{mean}\NormalTok{(dep_delay, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{arrange}\NormalTok{(}\KeywordTok{desc}\NormalTok{(dep_delay)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{slice}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{48}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{inner_join}\NormalTok{(weather, }\DataTypeTok{by=}\KeywordTok{c}\NormalTok{(}\StringTok{"origin"}\NormalTok{, }\StringTok{"year"}\NormalTok{, }\StringTok{"month"}\NormalTok{, }\StringTok{"day"}\NormalTok{, }\StringTok{"hour"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ precip, }\DataTypeTok{y =}\NormalTok{ wind_speed, }\DataTypeTok{color =}\NormalTok{ temp)) }\OperatorTok{+}
+\StringTok{    }\KeywordTok{geom_point}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Removed 4 rows containing missing values (geom_point).
+\end{verbatim}
+
+\includegraphics{13Ex_files/figure-latex/unnamed-chunk-13-1.pdf}
+
+\hypertarget{section-22}{%
+\subsection{5}\label{section-22}}
+
+\begin{quote}
+What does
+\texttt{anti\_join(flights,\ airports,\ by\ =\ c("dest"\ =\ "faa"))}
+tell you? What does
+\texttt{anti\_join(airports,\ flights,\ by\ =\ c("faa"\ =\ "dest"))}
+tell you?
+\end{quote}
+
+
+\end{document}

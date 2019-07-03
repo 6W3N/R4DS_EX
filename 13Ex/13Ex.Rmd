@@ -1,0 +1,332 @@
+---
+title: "r4ds Ex 13"
+date: "`r format(Sys.time(), '%Y/%m/%d')`"
+author: MW
+output: 
+  pdf_document: 
+    latex_engine: lualatex
+documentclass: ltjsarticle
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+```
+
+
+# 13.1
+## 1
+
+>    
+> Imagine you wanted to draw (approximately) the route each plane flies from its origin to its destination. What variables would you need? What tables would you need to combine?
+> 
+
+We need to combine `flights` and `airport` due to requiring latitude and longitude of airports of destination.
+
+## 2
+
+>  
+> I forgot to draw the relationship between `weather` and `airports`. What is the relationship and how should it appear in the diagram?
+>
+
+`airports$faa` and `weather$origin` are relationships as foreign keys.
+
+## 3
+
+>
+> `weather` only contains information for the origin (NYC) airports. If it contained weather records for all airports in the USA, what additional relation would it define with `flights`?
+>
+
+There are weather of destinations.
+
+## 4
+
+>
+> We know that some days of the year are “special”, and fewer people than usual fly on them. How might you represent that data as a data frame? What would be the primary keys of that table? How would it connect to the existing tables?
+>
+
+```{r}
+holiday <- tribble(
+	~year, ~month, ~day, ~holiday,
+	2013, 01, 01, "New Year",
+	2013, 12, 25, "Christmas Day"
+)
+```
+
+# 13.3
+## 1
+
+>
+> Add a surrogate key to flights.
+>
+
+
+```{r}
+flights %>% mutate(id=1:nrow(.))
+```
+
+
+## 2
+
+>
+> Identify the keys in the following datasets 
+> > 1. Lahman::Batting, 
+> > 2. babynames::babynames
+> > 3. nasaweather::atmos
+> > 4. fueleconomy::vehicles
+> > 5. ggplot2::diamonds
+> (You might need to install some packages and read some documentation.)
+>
+
+### 1.
+In 1.-4. there are primary keys of each dataset.
+
+```{r}
+Lahman::Batting %>% as_tibble() %>%
+	group_by(playerID, yearID, stint) %>% #grouping by primary keys
+	mutate(count=n()) %>%
+	filter(count>1)
+```
+ 
+Basically, 2.-4. are same as 1.
+
+### 5
+There are no primary keys.
+
+```{r}
+ggplot2::diamonds %>%
+	distinct() %>%
+	nrow()
+ggplot2::diamonds %>%
+	nrow()
+```
+
+
+## 3
+
+>
+> Draw a diagram illustrating the connections between the `Batting`, `Master`, and `Salaries` tables in the Lahman package. Draw another diagram that shows the relationship between `Master`, `Managers`, `AwardsManagers`.
+> How would you characterise the relationship between the `Batting`, `Pitching`, and `Fielding` tables?
+>
+
+We can create diagram in R using `DiagrameR` or `datamodelr`.
+
+```{r, eval=FALSE}
+DiagrammeR::grViz("13Ex/1.dot")
+DiagrammeR::grViz("13Ex/2.dot")
+```
+
+1.dot
+```
+digraph subgraph_label {
+  rankdir = TB
+  subgraph cluster0{
+    yearID_S[label="yearID"]
+    teamID_S[label="teamID"]
+    playerID_S[label="playerID"]
+    label = "Salaries"
+    {rank = same; yearID; teamID; playerID;}
+  }
+  subgraph cluster1{
+    playerID_M[label="playerID"]
+    label = "Master"
+  }
+  subgraph cluster2{
+    playerID_B[label="playerID"]
+    yearID_B[label="yearID"]
+    stint_B[label="stint"]
+    label = "Batting"
+    {rank = same; yearID; stint; playerID;}
+  }
+  playerID_M -> playerID_S
+  playerID_M -> playerID_B
+}
+```
+
+2.dot
+```
+digraph subgraph_label {
+  rankdir = TB
+  subgraph cluster0{
+    yearID_MN[label="yearID"]
+    teamID_MN[label="teamID"]
+    playerID_MN[label="playerID"]
+    inseason_MN[label="inseason"]
+    label = "Managers"
+    {rank = same; yearID_MN; teamID_MN; inseason_MN; playerID_MN}
+  }
+  subgraph cluster1{
+    playerID_M[label="playerID"]
+    label = "Master"
+  }
+  subgraph cluster2{
+    playerID_A[label="playerID"]
+    awardID_A[label="awardID"]
+    yearID_A[label="yearID"]
+    lgID_A[label="lgID"]
+    label = "AwardManagers"
+    {rank = same; yearID; stint; playerID;}
+  }
+  playerID_M -> playerID_A
+  playerID_M -> playerID_MN
+}
+```
+
+
+# 13.4
+## 1
+
+>
+> Compute the average delay by destination, then join on the airports data frame so you can show the spatial distribution of delays. Here’s an easy way to draw a map of the United States: 
+>
+
+
+```{r}
+flights %>%
+	group_by(dest) %>%
+	summarise(delay = mean(arr_delay, na.rm = TRUE)) %>%
+	inner_join(airports, by = c(dest = "faa")) %>%
+	ggplot(aes(lon, lat, colour = delay)) +
+	borders("state") +
+	geom_point() +
+	coord_quickmap()
+```
+
+
+## 2
+
+>
+> Add the location of the origin and destination (i.e. the `lat` and `lon`) to `flights`. 
+>
+
+```{r}
+flights %>% select(year:day, hour, origin, dest) %>%
+	left_join(
+		  airports,
+		  by = c("origin" = "faa")
+		  ) %>%
+	left_join(
+		  airports,
+		  by = c("dest" = "faa")
+	) %>%
+	select(year:day, origin, dest, lat.x, lon.x, lat.y, lon.y)
+```
+
+## 3 
+
+>
+> Is there a relationship between the age of a plane and its delays?
+> 
+
+```{r}
+flights %>% inner_join(planes %>% select(tailnum, plane_year = year), by = "tailnum") %>%
+	mutate(age = year - plane_year) %>%
+	group_by(age) %>%
+	summarise(
+		  dep_delay_mean = mean(dep_delay, na.rm = TRUE),
+		  arr_delay_mean = mean(arr_delay, na.rm = TRUE),
+		  n_arr_delay = sum(!is.na(arr_delay)),
+		  n_dep_delay = sum(!is.na(arr_delay))
+		  ) %>%
+	ggplot(aes(x=age, y=dep_delay_mean)) +
+	geom_point()
+```
+
+## 4
+
+>
+> What weather conditions make it more likely to see a delay?
+>
+
+```{r}
+flights %>% 
+	inner_join(weather, by = c("origin" = "origin",
+				   "year" = "year",
+				   "month" = "month",
+				   "day" = "day",
+				   "hour" = "hour"
+				   )
+	)
+```
+
+GLM...?
+
+
+## 5
+
+>
+> What happened on June 13, 2013? Display the spatial pattern of delays, and then use Google to cross-reference with the weather.
+>
+
+There were storms.
+
+
+# 13.5.1
+## 1
+
+>
+> What does it mean for a flight to have a missing `tailnum`? What do the tail numbers that don’t have a matching record in planes have in common? (Hint: one variable explains ~90% of the problems.)
+>
+
+```{r}
+flights %>%
+	anti_join(planes, by = "tailnum") %>%
+	group_by(carrier) %>%
+	summarize(count=n()) %>%
+	select(carrier, count)
+```
+
+## 2
+
+>
+> Filter flights to only show flights with planes that have flown at least 100 flights.
+>
+
+```{r}
+flights %>%
+	group_by(tailnum) %>%
+	count() %>%
+	filter(n >= 100)
+```
+
+
+## 3
+
+>
+> Combine `fueleconomy::vehicles` and `fueleconomy::common` to find only the records for the most common models.
+>
+
+```{r}
+fueleconomy::vehicles %>%
+	semi_join(fueleconomy::common, by = c("make", "model")) %>%
+	distinct(model, make) %>%
+	group_by(model) %>%
+	mutate(count=n()) %>%
+	filter(count > 1) %>%
+	arrange(count)
+```
+
+## 4
+
+>
+> Find the 48 hours (over the course of the whole year) that have the worst delays. Cross-reference it with the weather data. Can you see any patterns?
+>
+
+```{r}
+flights %>%
+	mutate(hour=sched_dep_time %/% 100) %>%
+	group_by(origin, year, month, day, hour) %>%
+	summarise(dep_delay = mean(dep_delay, na.rm = TRUE)) %>%
+	arrange(desc(dep_delay)) %>%
+	slice(1:48) %>%
+	inner_join(weather, by=c("origin", "year", "month", "day", "hour")) %>%
+	ggplot(aes(x = precip, y = wind_speed, color = temp)) +
+	geom_point()
+```
+
+## 5
+
+>
+> What does `anti_join(flights, airports, by = c("dest" = "faa"))` tell you? What does `anti_join(airports, flights, by = c("faa" = "dest"))` tell you?
+>
+
+

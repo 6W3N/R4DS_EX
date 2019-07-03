@@ -1,0 +1,23 @@
+digraph subgraph_label {
+  rankdir = TB
+  subgraph cluster0{
+    yearID_S[label="yearID"]
+    teamID_S[label="teamID"]
+    playerID_S[label="playerID"]
+    label = "Salaries"
+    {rank = same; yearID; teamID; playerID;}
+  }
+  subgraph cluster1{
+    playerID_M[label="playerID"]
+    label = "Master"
+  }
+  subgraph cluster2{
+    playerID_B[label="playerID"]
+    yearID_B[label="yearID"]
+    stint_B[label="stint"]
+    label = "Batting"
+    {rank = same; yearID; stint; playerID;}
+  }
+  playerID_M -> playerID_S
+  playerID_M -> playerID_B
+}
